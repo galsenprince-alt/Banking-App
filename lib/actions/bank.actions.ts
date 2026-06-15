@@ -114,7 +114,7 @@ export const getInstitution = async ({
   try {
     const response = await plaidClient.institutionsGetById({
       institution_id: institutionId,
-      country_codes: ["US"] as CountryCode[],
+      country_codes: ["CA", "US"] as CountryCode[],
     });
 
     return parseStringify(response.data.institution);
