@@ -4,6 +4,7 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
 import { encryptId, parseStringify } from "../utils";
+import { encryptField, decryptField } from "../crypto";
 import { CountryCode, ProcessorTokenCreateRequestProcessorEnum, Products } from "plaid";
 import { plaidClient } from "@/lib/plaid";
 import { revalidatePath } from "next/cache";
@@ -65,7 +66,7 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
     // 3. Sauvegarder dans Appwrite
     const newUser = await database.createDocument(
       DATABASE_ID!, USER_COLLECTION_ID!, ID.unique(),
-      { ...userData, userId: newUserAccount.$id, stripeCustomerId }
+      { ...userData, ssn: encryptField(userData.ssn), userId: newUserAccount.$id, stripeCustomerId }
     );
 
     // 4. Créer la session
@@ -132,7 +133,7 @@ export const createBankAccount = async ({
     const { database } = await createAdminClient();
     const bankAccount = await database.createDocument(
       DATABASE_ID!, BANK_COLLECTION_ID!, ID.unique(),
-      { userId, bankId, accountId, accessToken, fundingSourceUrl, sharableId }
+      { userId, bankId, accountId, accessToken: encryptField(accessToken), fundingSourceUrl, sharableId }
     );
     return parseStringify(bankAccount);
   } catch (error) {
@@ -194,7 +195,11 @@ export const getBanks = async ({ userId }: getBanksProps) => {
       DATABASE_ID!, BANK_COLLECTION_ID!,
       [Query.equal("userId", [userId])]
     );
-    return parseStringify(banks.documents);
+    const docs = banks.documents.map((doc) => ({
+      ...doc,
+      accessToken: decryptField(doc.accessToken as string),
+    }));
+    return parseStringify(docs);
   } catch (error) {
     console.error("Error getting banks:", error);
   }
@@ -208,7 +213,11 @@ export const getBank = async ({ documentId }: getBankProps) => {
       DATABASE_ID!, BANK_COLLECTION_ID!,
       [Query.equal("$id", [documentId])]
     );
-    return parseStringify(bank.documents[0]);
+    const doc = bank.documents[0];
+    return parseStringify({
+      ...doc,
+      accessToken: decryptField(doc.accessToken as string),
+    });
   } catch (error) {
     console.error("Error getting bank:", error);
   }
@@ -223,7 +232,11 @@ export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps)
       [Query.equal("accountId", [accountId])]
     );
     if (bank.total !== 1) return null;
-    return parseStringify(bank.documents[0]);
+    const doc = bank.documents[0];
+    return parseStringify({
+      ...doc,
+      accessToken: decryptField(doc.accessToken as string),
+    });
   } catch (error) {
     console.error("Error getting bank by account ID:", error);
   }
