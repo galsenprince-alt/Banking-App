@@ -1,8 +1,8 @@
-/* eslint-disable no-unused-vars */
+
 
 declare type SearchParamProps = {
-  params: { [key: string]: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ [key: string]: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 // ========================================
@@ -29,8 +29,7 @@ declare type User = {
   $id: string;
   email: string;
   userId: string;
-  dwollaCustomerUrl: string;
-  dwollaCustomerId: string;
+  stripeCustomerId: string;  // remplace dwollaCustomerUrl + dwollaCustomerId
   firstName: string;
   lastName: string;
   address1: string;
@@ -74,7 +73,6 @@ declare type Transaction = {
   category: string;
   date: string;
   image: string;
-  type: string;
   $createdAt: string;
   channel: string;
   senderBankId: string;
@@ -111,30 +109,22 @@ declare type Receiver = {
   lastName: string;
 };
 
+
 declare type TransferParams = {
-  sourceFundingSourceUrl: string;
-  destinationFundingSourceUrl: string;
-  amount: string;
+  stripeCustomerId: string;
+  bankAccountId: string;
+  amount: number;
+  currency?: string;
+  description?: string;
 };
 
+
 declare type AddFundingSourceParams = {
-  dwollaCustomerId: string;
+  stripeCustomerId: string;
   processorToken: string;
   bankName: string;
 };
 
-declare type NewDwollaCustomerParams = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  type: string;
-  address1: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  dateOfBirth: string;
-  ssn: string;
-};
 
 declare interface CreditCardProps {
   account: Account;
@@ -172,12 +162,12 @@ declare interface PaginationProps {
   totalPages: number;
 }
 
+// LIGNE 163 à 165 — remplace par :
 declare interface PlaidLinkProps {
   user: User;
   variant?: "primary" | "ghost";
-  dwollaCustomerId?: string;
+  stripeCustomerId?: string;
 }
-
 // declare type User = sdk.Models.Document & {
 //   accountId: string;
 //   email: string;
@@ -193,7 +183,7 @@ declare interface AuthFormProps {
 
 declare interface BankDropdownProps {
   accounts: Account[];
-  setValue?: UseFormSetValue<any>;
+  setValue?: UseFormSetValue<Any>;
   otherStyles?: string;
 }
 
@@ -202,7 +192,7 @@ declare interface BankTabItemProps {
   appwriteItemId?: string;
 }
 
-declare interface TotlaBalanceBoxProps {
+declare interface TotalBalanceBoxProps {
   accounts: Account[];
   totalBanks: number;
   totalCurrentBalance: number;
@@ -210,6 +200,7 @@ declare interface TotlaBalanceBoxProps {
 
 declare interface FooterProps {
   user: User;
+  type?: "desktop" | "mobile";
 }
 
 declare interface RightSidebarProps {

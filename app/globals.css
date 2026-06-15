@@ -60,8 +60,11 @@
 
 @theme inline {
   /* Font families — reference Next.js CSS variables injected at runtime */
-  --font-inter: var(--font-inter);
-  --font-ibm-plex-serif: var(--font-ibm-plex-serif);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-space-grotesk: var(--font-space-grotesk);
+  /* Aliases for components still referencing old variable names */
+  --font-inter: var(--font-dm-sans);
+  --font-ibm-plex-serif: var(--font-space-grotesk);
 }
 
 @keyframes accordion-down {
@@ -77,10 +80,63 @@
 /* Dark mode via .dark class */
 @variant dark (&:is(.dark *));
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Semantic theme tokens — auto-swap between light & dark
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg-page: #B89755;          /* doré chaud — main page background */
+  --bg-surface: #FFFFFF;        /* cards & elevated surfaces stay white for contrast */
+  --bg-surface-2: #F1F5F9;
+  --text-strong: #1A1410;       /* deep espresso, readable on coffee bg */
+  --text-soft: #3F342B;
+  --text-muted: #6B5D4F;
+  --border-subtle: #D4C8B8;     /* warm cream border that ties to coffee bg */
+  --accent: #0179FE;
+  --accent-soft: #EEF4FF;
+  --violet: #7C3AED;
+  --violet-soft: #FAF5FF;
+  --emerald: #16A34A;
+  --emerald-soft: #F0FDF4;
+  --rose: #DC2626;
+  --rose-soft: #FEF3F2;
+  --hero-gradient: linear-gradient(135deg, #0179FE 0%, #4893FF 100%);
+}
+
+.dark {
+  --bg-page: #0A0E1A;
+  --bg-surface: #141927;
+  --bg-surface-2: #1F2937;
+  --text-strong: #F1F5F9;
+  --text-soft: #CBD5E1;
+  --text-muted: #94A3B8;
+  --border-subtle: #1F2937;
+  --accent: #60A5FA;
+  --accent-soft: rgba(96, 165, 250, 0.15);
+  --violet: #A78BFA;
+  --violet-soft: rgba(167, 139, 250, 0.15);
+  --emerald: #4ADE80;
+  --emerald-soft: rgba(74, 222, 128, 0.15);
+  --rose: #F87171;
+  --rose-soft: rgba(248, 113, 113, 0.15);
+  --hero-gradient: linear-gradient(135deg, #0179FE 0%, #7C3AED 100%);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg-page);
+  color: var(--text-strong);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .glassmorphism {
@@ -147,6 +203,11 @@
 @utility text-20 {
   font-size: 20px;
   line-height: 24px;
+}
+
+@utility text-22 {
+  font-size: 22px;
+  line-height: 28px;
 }
 
 @utility text-24 {
@@ -276,12 +337,12 @@
 
   /* My Banks */
   .my-banks {
-    @apply flex h-screen max-h-screen w-full flex-col gap-8 bg-gray-25 p-8 xl:py-12;
+    @apply flex h-screen max-h-screen w-full flex-col gap-8 p-8 xl:py-12;
   }
 
   /* Transactions */
   .transactions {
-    @apply flex max-h-screen w-full flex-col gap-8 overflow-y-scroll bg-gray-25 p-8 xl:py-12;
+    @apply flex max-h-screen w-full flex-col gap-8 overflow-y-scroll p-8 xl:py-12;
   }
 
   .transactions-header {
@@ -389,7 +450,7 @@
 
   /* Payment Transfer */
   .payment-transfer {
-    @apply no-scrollbar flex flex-col overflow-y-scroll bg-gray-25 p-8 md:max-h-screen xl:py-12;
+    @apply no-scrollbar flex flex-col overflow-y-scroll p-8 md:max-h-screen xl:py-12;
   }
 
   .payment-transfer_form-item {
@@ -453,11 +514,11 @@
 
   /* Sidebar */
   .sidebar {
-    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-8 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
+    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-6 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
   }
 
   .sidebar-logo {
-    @apply 2xl:text-26 font-ibm-plex-serif text-[26px] font-bold text-black-1 max-xl:hidden;
+    @apply 2xl:text-24 font-space-grotesk text-[22px] font-bold tracking-tight text-black-1 max-xl:hidden;
   }
 
   .sidebar-link {
@@ -468,3 +529,99 @@
     @apply text-16 font-semibold text-black-2 max-xl:hidden;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Theme-aware overrides — adapt existing components to dark mode
+   ───────────────────────────────────────────────────────────────────────────── */
+.dark .sidebar {
+  background: var(--bg-surface);
+  border-color: var(--border-subtle);
+}
+.dark .sidebar-logo,
+.dark .sidebar-label { color: var(--text-strong); }
+.dark .recent-transactions-label,
+.dark .total-balance-amount,
+.dark .header-box-title,
+.dark .profile-name { color: var(--text-strong); }
+.dark .total-balance-label,
+.dark .header-box-subtext,
+.dark .profile-email { color: var(--text-soft); }
+.dark .total-balance,
+.dark .right-sidebar { background: var(--bg-page); border-color: var(--border-subtle); }
+.dark .my-banks,
+.dark .transactions,
+.dark .payment-transfer { background: var(--bg-page); }
+.dark .view-all-btn { background: var(--bg-surface); border-color: var(--border-subtle); color: var(--text-soft); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Dashboard 2.0 — fintech-style card components
+   ───────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .surface {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    @apply rounded-2xl;
+  }
+
+  .surface-soft {
+    background: var(--bg-surface-2);
+    @apply rounded-2xl;
+  }
+
+  .hero-balance {
+    background: var(--hero-gradient);
+    @apply relative overflow-hidden rounded-3xl text-white p-6 md:p-8;
+  }
+
+  .hero-blob {
+    @apply absolute -right-10 -top-10 w-48 h-48 rounded-full pointer-events-none;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .hero-blob-2 {
+    @apply absolute -left-16 -bottom-20 w-56 h-56 rounded-full pointer-events-none;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .quick-action {
+    @apply flex flex-col items-center gap-2 cursor-pointer transition-transform hover:scale-105;
+  }
+
+  .quick-action-icon {
+    @apply flex h-12 w-12 items-center justify-center rounded-2xl transition-shadow;
+  }
+
+  .quick-action-label {
+    color: var(--text-soft);
+    @apply text-12 font-medium;
+  }
+
+  .activity-item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    @apply flex items-center gap-3 rounded-xl p-3 transition-colors;
+  }
+
+  .activity-item:hover {
+    background: var(--bg-surface-2);
+  }
+
+  .activity-icon {
+    @apply flex h-10 w-10 items-center justify-center rounded-full shrink-0;
+  }
+
+  .trend-pill {
+    @apply inline-flex items-center gap-1 rounded-full bg-white/15 backdrop-blur-sm px-2.5 py-1 text-12 font-medium;
+  }
+
+  .card-title {
+    color: var(--text-strong);
+    @apply text-16 font-semibold;
+  }
+
+  .card-subtitle {
+    color: var(--text-soft);
+    @apply text-12;
+  }
+}
+

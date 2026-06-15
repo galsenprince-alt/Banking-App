@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "msf-banking",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d C:\\Users\\Admin\\Desktop\\msf_mobile_banking && npm run dev"],
+      "port": 3000
+    }
+  ]
+}
