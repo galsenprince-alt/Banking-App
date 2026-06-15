@@ -14,7 +14,15 @@ const SpendingBreakdown = ({
   const total = items.reduce((sum, item) => sum + item.amount, 0);
   const radius = 36;
   const circumference = 2 * Math.PI * radius;
-  let offset = 0;
+
+  const segments = items.reduce<{ item: SpendingItem; length: number; offset: number }[]>(
+    (acc, item) => {
+      const length = (item.amount / total) * circumference;
+      const offset = acc.length === 0 ? 0 : acc[acc.length - 1].offset - acc[acc.length - 1].length;
+      return [...acc, { item, length, offset }];
+    },
+    []
+  );
 
   return (
     <div className="surface p-5 md:p-6">
@@ -33,11 +41,8 @@ const SpendingBreakdown = ({
             stroke="var(--bg-surface-2)"
             strokeWidth="14"
           />
-          {items.map((item) => {
-            const length = (item.amount / total) * circumference;
+          {segments.map(({ item, length, offset }) => {
             const dasharray = `${length} ${circumference}`;
-            const currentOffset = offset;
-            offset -= length;
             return (
               <circle
                 key={item.label}
@@ -48,7 +53,7 @@ const SpendingBreakdown = ({
                 stroke={item.color}
                 strokeWidth="14"
                 strokeDasharray={dasharray}
-                strokeDashoffset={currentOffset}
+                strokeDashoffset={offset}
                 strokeLinecap="round"
                 transform="rotate(-90 48 48)"
               />

@@ -29,6 +29,7 @@ const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isSignIn = type === "sign-in";
 
   const formSchema = authFormSchema(type);
@@ -40,6 +41,7 @@ const AuthForm = ({ type }: { type: string }) => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
+    setErrorMessage(null);
     try {
       if (type === "sign-up") {
         const userData = {
@@ -65,7 +67,9 @@ const AuthForm = ({ type }: { type: string }) => {
         if (response) router.push("/");
       }
     } catch (error) {
-      console.log(error);
+      const message =
+        error instanceof Error ? error.message : "An unexpected error occurred.";
+      setErrorMessage(message);
     } finally {
       setIsLoading(false);
     }
@@ -215,6 +219,10 @@ const AuthForm = ({ type }: { type: string }) => {
                   </Link>
                 )}
               </div>
+
+              {errorMessage && (
+                <p className="text-14 text-red-500 text-center">{errorMessage}</p>
+              )}
 
               <Button
                 type="submit"
