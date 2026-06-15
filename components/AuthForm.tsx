@@ -27,7 +27,7 @@ import { authFormSchema } from "@/lib/utils";
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isSignIn = type === "sign-in";
@@ -57,7 +57,7 @@ const AuthForm = ({ type }: { type: string }) => {
           password: data.password,
         };
         const newUser = await signUp(userData);
-        setUser(newUser);
+        setUser(newUser ?? null);
       }
       if (type === "sign-in") {
         const response = await signIn({

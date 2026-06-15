@@ -10,6 +10,8 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const { id } = await searchParams;
 
   const loggedIn = await getLoggedInUser();
+  if (!loggedIn) return null;
+
   const accounts = await getAccounts({ userId: loggedIn.$id });
 
   if (!accounts) return null;
@@ -19,7 +21,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const account = await getAccount({ appwriteItemId });
 
   const totalBalance = accounts?.totalCurrentBalance || 0;
-  const transactions = account?.transactions || [];
+  const transactions = (account?.transactions || []) as Transaction[];
 
   return (
     <section className="flex w-full">
@@ -45,7 +47,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
       <RightSidebar
         user={loggedIn}
         transactions={transactions}
-        banks={accountsData?.slice(0, 2)}
+        banks={accountsData?.slice(0, 2) as (Bank[] & Account[])}
       />
     </section>
   );

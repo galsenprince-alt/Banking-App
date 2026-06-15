@@ -16,13 +16,13 @@ const {
 } = process.env;
 
 // ─── getUserInfo ──────────────────────────────────────────────────────────────
-export const getUserInfo = async ({ userId }: getUserInfoProps) => {
+export const getUserInfo = async ({ userId }: getUserInfoProps): Promise<User | undefined> => {
   try {
     const { database } = await createAdminClient();
     const user = await database.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
       Query.equal("userId", [userId]),
     ]);
-    return parseStringify(user.documents[0]);
+    return parseStringify(user.documents[0]) as unknown as User;
   } catch (error) {
     console.error(error);
   }
@@ -47,7 +47,7 @@ export const signIn = async ({ email, password }: signInProps) => {
 };
 
 // ─── signUp ───────────────────────────────────────────────────────────────────
-export const signUp = async ({ password, ...userData }: SignUpParams) => {
+export const signUp = async ({ password, ...userData }: SignUpParams): Promise<User | undefined> => {
   const { email, firstName, lastName } = userData;
   try {
     const { account, database } = await createAdminClient();
@@ -77,19 +77,19 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
       secure: true,
     });
 
-    return parseStringify(newUser);
+    return parseStringify(newUser) as unknown as User;
   } catch (error) {
     console.error("Error during sign up:", error);
   }
 };
 
 // ─── getLoggedInUser ──────────────────────────────────────────────────────────
-export const getLoggedInUser = async () => {
+export const getLoggedInUser = async (): Promise<User | null> => {
   try {
     const { account } = await createSessionClient();
     const result = await account.get();
     const user = await getUserInfo({ userId: result.$id });
-    return parseStringify(user);
+    return user ?? null;
   } catch (_error) {
     return null;
   }
@@ -187,35 +187,35 @@ processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,    });
 };
 
 // ─── getBanks ─────────────────────────────────────────────────────────────────
-export const getBanks = async ({ userId }: getBanksProps) => {
+export const getBanks = async ({ userId }: getBanksProps): Promise<Bank[] | undefined> => {
   try {
     const { database } = await createAdminClient();
     const banks = await database.listDocuments(
       DATABASE_ID!, BANK_COLLECTION_ID!,
       [Query.equal("userId", [userId])]
     );
-    return parseStringify(banks.documents);
+    return parseStringify(banks.documents) as unknown as Bank[];
   } catch (error) {
     console.error("Error getting banks:", error);
   }
 };
 
 // ─── getBank ──────────────────────────────────────────────────────────────────
-export const getBank = async ({ documentId }: getBankProps) => {
+export const getBank = async ({ documentId }: getBankProps): Promise<Bank | undefined> => {
   try {
     const { database } = await createAdminClient();
     const bank = await database.listDocuments(
       DATABASE_ID!, BANK_COLLECTION_ID!,
       [Query.equal("$id", [documentId])]
     );
-    return parseStringify(bank.documents[0]);
+    return parseStringify(bank.documents[0]) as unknown as Bank;
   } catch (error) {
     console.error("Error getting bank:", error);
   }
 };
 
 // ─── getBankByAccountId ───────────────────────────────────────────────────────
-export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps) => {
+export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps): Promise<Bank | null | undefined> => {
   try {
     const { database } = await createAdminClient();
     const bank = await database.listDocuments(
@@ -223,7 +223,7 @@ export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps)
       [Query.equal("accountId", [accountId])]
     );
     if (bank.total !== 1) return null;
-    return parseStringify(bank.documents[0]);
+    return parseStringify(bank.documents[0]) as unknown as Bank;
   } catch (error) {
     console.error("Error getting bank by account ID:", error);
   }
