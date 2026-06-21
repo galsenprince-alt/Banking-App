@@ -6,8 +6,10 @@ import React from 'react'
 
 const MyBanks = async () => {
   const loggedIn = await getLoggedInUser();
-  const accounts = await getAccounts({ 
-    userId: loggedIn.$id 
+  if (!loggedIn) return null;
+
+  const accounts = await getAccounts({
+    userId: loggedIn.$id
   })
 
   return (
@@ -23,9 +25,9 @@ const MyBanks = async () => {
             Your cards
           </h2>
           <div className="flex flex-wrap gap-6">
-            {accounts && accounts.data.map((a: Account) => (
+            {accounts && accounts.data.map((a: any) => (
               <BankCard 
-                key={accounts.id}
+                key={a.id}
                 account={a}
                 userName={loggedIn?.firstName}
               />

@@ -22,6 +22,17 @@ const categoryIcon: Record<string, { Icon: typeof Coffee; bg: string; fg: string
 
 const fallback = { Icon: Coffee, bg: "var(--accent-soft)", fg: "var(--accent)" };
 
+type ActivityTransaction = {
+  $id?: string;
+  id?: string;
+  name: string;
+  amount: number;
+  type: string;
+  category: string;
+  date?: string;
+  $createdAt?: string;
+};
+
 const formatDate = (date: string) => {
   if (!date) return "";
   const d = new Date(date);
@@ -32,7 +43,7 @@ const formatDate = (date: string) => {
   return d.toLocaleDateString([], { month: "short", day: "numeric" });
 };
 
-const ActivityFeed = ({ transactions = [] }: { transactions?: Transaction[] }) => {
+const ActivityFeed = ({ transactions = [] }: { transactions?: ActivityTransaction[] }) => {
   const items = transactions.slice(0, 5);
 
   return (
@@ -75,7 +86,7 @@ const ActivityFeed = ({ transactions = [] }: { transactions?: Transaction[] }) =
                     className="text-12"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    {formatDate(tx.date || tx.$createdAt)}
+                    {formatDate(tx.date || tx.$createdAt || "")}
                   </p>
                 </div>
                 <span

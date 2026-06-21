@@ -11,7 +11,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
     const banks = await getBanks({ userId });
 
     const accounts = await Promise.all(
-      banks?.map(async (bank: Bank) => {
+      (banks ?? []).map(async (bank: Bank) => {
         const accountsResponse = await plaidClient.accountsGet({
           access_token: bank.accessToken,
         });
@@ -25,7 +25,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
           id: accountData.account_id,
           availableBalance: accountData.balances.available!,
           currentBalance: accountData.balances.current!,
-          institutionId: institution.institution_id,
+          institutionId: institution?.institution_id ?? "",
           name: accountData.name,
           officialName: accountData.official_name,
           mask: accountData.mask!,
@@ -52,6 +52,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
 export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
   try {
     const bank = await getBank({ documentId: appwriteItemId });
+    if (!bank) throw new Error("Bank not found");
 
     const [accountsResponse, transferTransactionsData] = await Promise.all([
       plaidClient.accountsGet({ access_token: bank.accessToken }),
@@ -60,8 +61,8 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
 
     const accountData = accountsResponse.data.accounts[0];
 
-    const transferTransactions = transferTransactionsData.documents.map(
-      (transferData: Transaction & { $id: string; $createdAt: string }) => ({
+    const transferTransactions = (transferTransactionsData?.documents ?? []).map(
+      (transferData: any) => ({
         id: transferData.$id,
         name: transferData.name,
         amount: transferData.amount,
@@ -85,7 +86,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       id: accountData.account_id,
       availableBalance: accountData.balances.available!,
       currentBalance: accountData.balances.current!,
-      institutionId: institution.institution_id,
+      institutionId: institution?.institution_id ?? "",
       name: accountData.name,
       officialName: accountData.official_name,
       mask: accountData.mask!,

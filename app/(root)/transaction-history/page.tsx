@@ -10,6 +10,8 @@ const TransactionHistory = async ({ searchParams }: SearchParamProps) => {
   const currentPage = Number(page as string) || 1;
 
   const loggedIn = await getLoggedInUser();
+  if (!loggedIn) return null;
+
   const accounts = await getAccounts({ userId: loggedIn.$id });
 
   if (!accounts) return;
@@ -20,14 +22,14 @@ const TransactionHistory = async ({ searchParams }: SearchParamProps) => {
   const account = await getAccount({ appwriteItemId });
 
   const rowsPerPage = 10;
-  const totalPages = Math.ceil(account?.transactions.length / rowsPerPage);
+  const totalPages = Math.ceil((account?.transactions?.length ?? 0) / rowsPerPage);
 
   const indexOfLastTransaction = currentPage * rowsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
-  const currentTransactions = account?.transactions.slice(
+  const currentTransactions = (account?.transactions?.slice(
     indexOfFirstTransaction,
     indexOfLastTransaction
-  );
+  ) ?? []) as Transaction[];
 
   return (
     <div className="transactions">
@@ -55,7 +57,7 @@ const TransactionHistory = async ({ searchParams }: SearchParamProps) => {
           <div className="transactions-account-balance">
             <p className="text-14">Current balance</p>
             <p className="text-24 text-center font-bold">
-              {formatAmount(account?.data.currentBalance)}
+              {formatAmount(account?.data.currentBalance ?? 0)}
             </p>
           </div>
         </div>
