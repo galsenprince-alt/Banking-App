@@ -75,7 +75,6 @@ export const signUp = async ({ password, ...userData }: SignUpParams): Promise<U
         city: userData.city,
         postalCode: userData.postalCode,
         dateOfBirth: userData.dateOfBirth,
-        ssn: userData.ssn,
         stripeCustomerId,
       }
     );
