@@ -64,9 +64,10 @@ export const signUp = async ({ password, ...userData }: SignUpParams): Promise<U
     if (!stripeCustomerId) throw new Error("Error creating Stripe customer");
 
     // 3. Sauvegarder dans Appwrite
+    const { address1, ...restUserData } = userData;
     const newUser = await database.createDocument(
       DATABASE_ID!, USER_COLLECTION_ID!, ID.unique(),
-      { ...userData, userId: newUserAccount.$id, stripeCustomerId }
+      { ...restUserData, adress1: address1, userId: newUserAccount.$id, stripeCustomerId }
     );
 
     // 4. Créer la session
