@@ -15,7 +15,7 @@ const Transfer = async () => {
   const accountsData = accounts?.data ?? [];
 
   return (
-    <section className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 lg:p-8 xl:py-10">
+    <section className="flex-1 flex flex-col overflow-y-auto p-6 max-w-[1200px] mx-auto w-full">
       <HeaderBox
         title="Payment Transfer"
         subtext="Please provide any specific details or notes related to the payment transfer"

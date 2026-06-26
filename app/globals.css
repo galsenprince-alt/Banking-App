@@ -273,7 +273,7 @@ body {
   }
 
   .home-content {
-    @apply no-scrollbar flex w-full flex-1 flex-col gap-8 px-5 sm:px-8 py-7 lg:py-12 xl:max-h-screen xl:overflow-y-scroll;
+    @apply no-scrollbar flex w-full flex-1 flex-col gap-6 p-6 xl:overflow-y-auto;
   }
 
   .home-header {
@@ -352,12 +352,12 @@ body {
 
   /* My Banks */
   .my-banks {
-    @apply flex w-full flex-col gap-8 p-4 sm:p-6 lg:p-8 xl:py-10;
+    @apply flex w-full flex-col gap-6 p-6;
   }
 
   /* Transactions */
   .transactions {
-    @apply flex w-full flex-col gap-6 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:py-10;
+    @apply flex w-full flex-col gap-6 overflow-y-auto p-6;
   }
 
   .transactions-header {
@@ -465,7 +465,7 @@ body {
 
   /* Payment Transfer */
   .payment-transfer {
-    @apply no-scrollbar flex flex-col overflow-y-auto p-4 sm:p-6 lg:p-8 xl:py-10;
+    @apply no-scrollbar flex flex-col overflow-y-auto p-6;
   }
 
   .payment-transfer_form-item {
@@ -590,7 +590,7 @@ body {
   .hero-balance {
     background: var(--hero-gradient);
     box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25), 0 8px 10px -6px rgba(37, 99, 235, 0.15);
-    @apply relative overflow-hidden rounded-2xl text-white p-5 sm:p-6 md:p-8;
+    @apply relative overflow-hidden rounded-2xl text-white p-6;
   }
 
   .hero-blob {

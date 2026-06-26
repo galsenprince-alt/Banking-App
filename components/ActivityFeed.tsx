@@ -47,7 +47,7 @@ const ActivityFeed = ({ transactions = [] }: { transactions?: ActivityTransactio
   const items = transactions.slice(0, 5);
 
   return (
-    <div className="surface p-5 md:p-6">
+    <div className="surface p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="card-title">Recent activity</h3>
         <Link
