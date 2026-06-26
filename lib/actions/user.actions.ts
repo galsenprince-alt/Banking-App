@@ -22,6 +22,7 @@ export const getUserInfo = async ({ userId }: getUserInfoProps): Promise<User | 
     const user = await database.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
       Query.equal("userId", [userId]),
     ]);
+    if (!user.documents[0]) return undefined;
     return parseStringify(user.documents[0]) as unknown as User;
   } catch (error) {
     console.error(error);
@@ -40,7 +41,7 @@ export const signIn = async ({ email, password }: signInProps) => {
       secure: true,
     });
     const user = await getUserInfo({ userId: session.userId });
-    return parseStringify(user);
+    return user ?? null;
   } catch (error) {
     console.error("Error during sign in:", error);
   }
