@@ -4,7 +4,6 @@ import MobileNav from "@/components/MobileNav";
 import Sidebar from "@/components/Sidebar";
 import TopHeader from "@/components/TopHeader";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function RootLayout({
@@ -17,15 +16,14 @@ export default async function RootLayout({
   if (!loggedIn) redirect("/sign-in");
 
   return (
-    <main className="flex h-screen w-full font-dm-sans">
-      {/* Desktop sidebar */}
+    <main className="flex h-screen w-full font-dm-sans" style={{ background: "var(--bg-page)" }}>
       <Sidebar user={loggedIn} />
 
-      <div className="flex size-full flex-col">
-        {/* Top header — visible on ALL screen sizes */}
+      <div className="flex flex-1 flex-col overflow-hidden">
         <TopHeader user={loggedIn} />
-
-        {children}
+        <div className="flex-1 overflow-hidden">
+          {children}
+        </div>
       </div>
     </main>
   );

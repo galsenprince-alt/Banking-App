@@ -15,13 +15,13 @@ const Transfer = async () => {
   const accountsData = accounts?.data ?? [];
 
   return (
-    <section className="payment-transfer">
-      <HeaderBox 
+    <section className="flex-1 flex flex-col overflow-y-auto p-6 sm:p-8 xl:py-10">
+      <HeaderBox
         title="Payment Transfer"
         subtext="Please provide any specific details or notes related to the payment transfer"
       />
 
-      <section className="size-full pt-5">
+      <section className="mt-6">
         <PaymentTransferForm accounts={accountsData} />
       </section>
     </section>

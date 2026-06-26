@@ -17,10 +17,12 @@ const HeroBalance = ({
       <div className="hero-blob" />
       <div className="hero-blob-2" />
       <div className="relative z-10">
-        <p className="text-12 opacity-85 mb-1">Welcome back, {userName}</p>
-        <p className="text-14 opacity-90 mb-2">Total balance</p>
-        <div className="flex items-baseline gap-1 mb-3 font-space-grotesk">
-          <span className="text-36 md:text-[44px] font-semibold tracking-tight leading-none">
+        <p className="text-13 font-medium opacity-80 mb-0.5" style={{ fontSize: "13px" }}>
+          Welcome back, {userName}
+        </p>
+        <p className="text-12 opacity-70 mb-3">Total balance</p>
+        <div className="flex items-baseline gap-3 mb-4 font-space-grotesk">
+          <span className="text-[36px] md:text-[48px] font-semibold tracking-tight leading-none">
             $
             <CountUp
               decimal="."

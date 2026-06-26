@@ -30,40 +30,42 @@ const TransactionHistory = async ({ searchParams }: SearchParamProps) => {
   ) ?? []) as Transaction[];
 
   return (
-    <div className="transactions">
-      <div className="transactions-header">
-        <HeaderBox
-          title="Transaction History"
-          subtext="See your bank details and transactions."
-        />
-      </div>
+    <div className="flex-1 flex flex-col gap-6 overflow-y-auto p-6 sm:p-8 xl:py-10">
+      <HeaderBox
+        title="Transaction History"
+        subtext="See your bank details and transactions."
+      />
 
       <div className="space-y-6">
-        <div className="transactions-account">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-18 font-bold text-white">
-              {account?.data.name}
-            </h2>
-            <p className="text-14 text-blue-25">
-              {account?.data.officialName}
-            </p>
-            <p className="text-14 font-semibold tracking-[1.1px] text-white">
-              ●●●● ●●●● ●●●● {account?.data.mask}
-            </p>
-          </div>
+        <div className="surface overflow-hidden">
+          <div className="flex flex-col justify-between gap-4 bg-bank-gradient px-5 py-5 md:flex-row">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-16 font-semibold text-white">
+                {account?.data?.name ?? "No account selected"}
+              </h2>
+              <p className="text-13 text-white/70" style={{ fontSize: "13px" }}>
+                {account?.data?.officialName ?? ""}
+              </p>
+              <p className="text-13 font-medium tracking-[1.1px] text-white/90" style={{ fontSize: "13px" }}>
+                {account?.data?.mask ? `●●●● ●●●● ●●●● ${account.data.mask}` : ""}
+              </p>
+            </div>
 
-          <div className="transactions-account-balance">
-            <p className="text-14">Current balance</p>
-            <p className="text-24 text-center font-bold">
-              {formatAmount(account?.data.currentBalance ?? 0)}
-            </p>
+            <div className="flex flex-col items-center justify-center gap-1 rounded-xl bg-white/10 backdrop-blur-sm px-6 py-3">
+              <p className="text-12 text-white/70">Current balance</p>
+              <p className="text-22 font-bold text-white font-space-grotesk">
+                {formatAmount(account?.data?.currentBalance ?? 0)}
+              </p>
+            </div>
           </div>
         </div>
 
-        <section className="flex w-full flex-col gap-6">
-          <TransactionsTable transactions={currentTransactions} />
+        <section className="surface overflow-hidden">
+          <div className="p-5">
+            <TransactionsTable transactions={currentTransactions} />
+          </div>
           {totalPages > 1 && (
-            <div className="my-4 w-full">
+            <div className="border-t px-5 py-4" style={{ borderColor: "var(--border-subtle)" }}>
               <Pagination totalPages={totalPages} page={currentPage} />
             </div>
           )}

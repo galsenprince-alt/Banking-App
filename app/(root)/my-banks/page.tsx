@@ -13,20 +13,20 @@ const MyBanks = async () => {
   })
 
   return (
-    <section className='flex'>
-      <div className="my-banks">
-        <HeaderBox 
+    <section className='flex h-full overflow-y-auto'>
+      <div className="flex-1 flex flex-col gap-8 p-6 sm:p-8 xl:py-10">
+        <HeaderBox
           title="My Bank Accounts"
           subtext="Effortlessly manage your banking activites."
         />
 
-        <div className="space-y-4">
-          <h2 className="header-2">
+        <div className="space-y-6">
+          <h2 className="text-18 font-semibold" style={{ color: "var(--text-strong)" }}>
             Your cards
           </h2>
           <div className="flex flex-wrap gap-6">
             {accounts && accounts.data.map((a: any) => (
-              <BankCard 
+              <BankCard
                 key={a.id}
                 account={a}
                 userName={loggedIn?.firstName}

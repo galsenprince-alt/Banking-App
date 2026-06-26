@@ -84,41 +84,51 @@
    Semantic theme tokens — auto-swap between light & dark
    ───────────────────────────────────────────────────────────────────────────── */
 :root {
-  --bg-page: #B89755;          /* doré chaud — main page background */
-  --bg-surface: #FFFFFF;        /* cards & elevated surfaces stay white for contrast */
+  --bg-page: #F8FAFC;
+  --bg-surface: #FFFFFF;
   --bg-surface-2: #F1F5F9;
-  --text-strong: #1A1410;       /* deep espresso, readable on coffee bg */
-  --text-soft: #3F342B;
-  --text-muted: #6B5D4F;
-  --border-subtle: #D4C8B8;     /* warm cream border that ties to coffee bg */
-  --accent: #0179FE;
-  --accent-soft: #EEF4FF;
+  --text-strong: #0F172A;
+  --text-soft: #334155;
+  --text-muted: #64748B;
+  --border-subtle: #E2E8F0;
+  --accent: #2563EB;
+  --accent-soft: #EFF6FF;
   --violet: #7C3AED;
-  --violet-soft: #FAF5FF;
-  --emerald: #16A34A;
-  --emerald-soft: #F0FDF4;
+  --violet-soft: #F5F3FF;
+  --emerald: #059669;
+  --emerald-soft: #ECFDF5;
   --rose: #DC2626;
-  --rose-soft: #FEF3F2;
-  --hero-gradient: linear-gradient(135deg, #0179FE 0%, #4893FF 100%);
+  --rose-soft: #FEF2F2;
+  --hero-gradient: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --sidebar-bg: #FFFFFF;
+  --sidebar-active: #EFF6FF;
+  --sidebar-active-text: #1D4ED8;
 }
 
 .dark {
-  --bg-page: #0A0E1A;
-  --bg-surface: #141927;
-  --bg-surface-2: #1F2937;
+  --bg-page: #0B1120;
+  --bg-surface: #131C2E;
+  --bg-surface-2: #1A2540;
   --text-strong: #F1F5F9;
   --text-soft: #CBD5E1;
   --text-muted: #94A3B8;
-  --border-subtle: #1F2937;
+  --border-subtle: #1E293B;
   --accent: #60A5FA;
-  --accent-soft: rgba(96, 165, 250, 0.15);
+  --accent-soft: rgba(96, 165, 250, 0.12);
   --violet: #A78BFA;
-  --violet-soft: rgba(167, 139, 250, 0.15);
-  --emerald: #4ADE80;
-  --emerald-soft: rgba(74, 222, 128, 0.15);
-  --rose: #F87171;
-  --rose-soft: rgba(248, 113, 113, 0.15);
-  --hero-gradient: linear-gradient(135deg, #0179FE 0%, #7C3AED 100%);
+  --violet-soft: rgba(167, 139, 250, 0.12);
+  --emerald: #34D399;
+  --emerald-soft: rgba(52, 211, 153, 0.12);
+  --rose: #FB7185;
+  --rose-soft: rgba(251, 113, 133, 0.12);
+  --hero-gradient: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #7C3AED 100%);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.15);
+  --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
+  --sidebar-bg: #131C2E;
+  --sidebar-active: rgba(96, 165, 250, 0.12);
+  --sidebar-active-text: #60A5FA;
 }
 
 * {
@@ -304,7 +314,9 @@ body {
 
   /* Right sidebar */
   .right-sidebar {
-    @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l border-gray-200 xl:flex w-[355px] xl:overflow-y-scroll;
+    background: var(--bg-surface);
+    border-color: var(--border-subtle);
+    @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l xl:flex w-[320px] xl:overflow-y-scroll;
   }
 
   .profile-banner {
@@ -485,11 +497,13 @@ body {
 
   /* Footer */
   .footer {
-    @apply flex cursor-pointer items-center justify-between gap-2 py-6;
+    border-top: 1px solid var(--border-subtle);
+    @apply flex cursor-pointer items-center justify-between gap-2 py-4 mt-4;
   }
 
   .footer_name {
-    @apply flex size-10 items-center justify-center rounded-full bg-gray-200 max-xl:hidden;
+    background: var(--accent-soft);
+    @apply flex size-9 items-center justify-center rounded-lg max-xl:hidden;
   }
 
   .footer_email {
@@ -514,31 +528,29 @@ body {
 
   /* Sidebar */
   .sidebar {
-    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-6 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[355px];
+    background: var(--sidebar-bg);
+    border-color: var(--border-subtle);
+    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r pt-6 max-md:hidden sm:p-4 xl:p-6 2xl:w-[280px];
   }
 
   .sidebar-logo {
-    @apply 2xl:text-24 font-space-grotesk text-[22px] font-bold tracking-tight text-black-1 max-xl:hidden;
+    color: var(--text-strong);
+    @apply 2xl:text-22 font-space-grotesk text-[20px] font-bold tracking-tight max-xl:hidden;
   }
 
   .sidebar-link {
-    @apply flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start;
+    @apply flex gap-3 items-center py-1 md:p-3 2xl:p-3.5 rounded-xl justify-center xl:justify-start transition-colors;
   }
 
   .sidebar-label {
-    @apply text-16 font-semibold text-black-2 max-xl:hidden;
+    color: var(--text-soft);
+    @apply text-14 font-medium max-xl:hidden;
   }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Theme-aware overrides — adapt existing components to dark mode
    ───────────────────────────────────────────────────────────────────────────── */
-.dark .sidebar {
-  background: var(--bg-surface);
-  border-color: var(--border-subtle);
-}
-.dark .sidebar-logo,
-.dark .sidebar-label { color: var(--text-strong); }
 .dark .recent-transactions-label,
 .dark .total-balance-amount,
 .dark .header-box-title,
@@ -547,11 +559,10 @@ body {
 .dark .header-box-subtext,
 .dark .profile-email { color: var(--text-soft); }
 .dark .total-balance,
-.dark .right-sidebar { background: var(--bg-page); border-color: var(--border-subtle); }
-.dark .my-banks,
-.dark .transactions,
-.dark .payment-transfer { background: var(--bg-page); }
+.dark .right-sidebar { border-color: var(--border-subtle); }
 .dark .view-all-btn { background: var(--bg-surface); border-color: var(--border-subtle); color: var(--text-soft); }
+.dark .header-2 { color: var(--text-strong); }
+.dark .profile-img { background: var(--bg-surface-2); border-color: var(--bg-surface); }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Dashboard 2.0 — fintech-style card components
@@ -560,7 +571,12 @@ body {
   .surface {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    @apply rounded-2xl;
+    box-shadow: var(--shadow-card);
+    @apply rounded-2xl transition-shadow;
+  }
+
+  .surface:hover {
+    box-shadow: var(--shadow-card-hover);
   }
 
   .surface-soft {
@@ -570,17 +586,18 @@ body {
 
   .hero-balance {
     background: var(--hero-gradient);
-    @apply relative overflow-hidden rounded-3xl text-white p-6 md:p-8;
+    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25), 0 8px 10px -6px rgba(37, 99, 235, 0.15);
+    @apply relative overflow-hidden rounded-2xl text-white p-6 md:p-8;
   }
 
   .hero-blob {
     @apply absolute -right-10 -top-10 w-48 h-48 rounded-full pointer-events-none;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .hero-blob-2 {
     @apply absolute -left-16 -bottom-20 w-56 h-56 rounded-full pointer-events-none;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .quick-action {
@@ -598,7 +615,6 @@ body {
 
   .activity-item {
     background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
     @apply flex items-center gap-3 rounded-xl p-3 transition-colors;
   }
 
