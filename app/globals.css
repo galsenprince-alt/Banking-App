@@ -316,7 +316,7 @@ body {
   .right-sidebar {
     background: var(--bg-surface);
     border-color: var(--border-subtle);
-    @apply no-scrollbar hidden h-screen max-h-screen flex-col border-l xl:flex w-[320px] xl:overflow-y-scroll;
+    @apply no-scrollbar hidden max-h-full flex-col border-l 2xl:flex w-[300px] shrink-0 overflow-y-auto;
   }
 
   .profile-banner {
@@ -328,33 +328,36 @@ body {
   }
 
   .profile-img {
-    @apply flex-center absolute -top-8 size-24 rounded-full bg-gray-100 border-8 border-white p-2 shadow-profile;
+    background: var(--bg-surface-2);
+    border-color: var(--bg-surface);
+    @apply flex-center absolute -top-8 size-20 rounded-full border-4 p-2 shadow-profile;
   }
 
   .profile-details {
-    @apply flex flex-col pt-24;
+    @apply flex flex-col pt-16;
   }
 
   .profile-name {
-    @apply text-24 font-semibold text-gray-900;
+    @apply text-18 font-semibold;
   }
 
   .profile-email {
-    @apply text-16 font-normal text-gray-600;
+    @apply text-14 font-normal;
+    color: var(--text-muted);
   }
 
   .banks {
-    @apply flex flex-col justify-between gap-8 px-6 py-8;
+    @apply flex flex-col justify-between gap-6 px-5 py-6;
   }
 
   /* My Banks */
   .my-banks {
-    @apply flex h-screen max-h-screen w-full flex-col gap-8 p-8 xl:py-12;
+    @apply flex w-full flex-col gap-8 p-4 sm:p-6 lg:p-8 xl:py-10;
   }
 
   /* Transactions */
   .transactions {
-    @apply flex max-h-screen w-full flex-col gap-8 overflow-y-scroll p-8 xl:py-12;
+    @apply flex w-full flex-col gap-6 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:py-10;
   }
 
   .transactions-header {
@@ -462,7 +465,7 @@ body {
 
   /* Payment Transfer */
   .payment-transfer {
-    @apply no-scrollbar flex flex-col overflow-y-scroll p-8 md:max-h-screen xl:py-12;
+    @apply no-scrollbar flex flex-col overflow-y-auto p-4 sm:p-6 lg:p-8 xl:py-10;
   }
 
   .payment-transfer_form-item {
@@ -530,16 +533,16 @@ body {
   .sidebar {
     background: var(--sidebar-bg);
     border-color: var(--border-subtle);
-    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r pt-6 max-md:hidden sm:p-4 xl:p-6 2xl:w-[280px];
+    @apply sticky left-0 top-0 flex h-screen w-fit flex-col justify-between border-r pt-5 max-md:hidden p-3 xl:p-5 xl:w-[240px];
   }
 
   .sidebar-logo {
     color: var(--text-strong);
-    @apply 2xl:text-22 font-space-grotesk text-[20px] font-bold tracking-tight max-xl:hidden;
+    @apply text-[18px] font-space-grotesk font-bold tracking-tight max-xl:hidden;
   }
 
   .sidebar-link {
-    @apply flex gap-3 items-center py-1 md:p-3 2xl:p-3.5 rounded-xl justify-center xl:justify-start transition-colors;
+    @apply flex gap-3 items-center py-1 md:p-2.5 xl:p-3 rounded-xl justify-center xl:justify-start transition-colors;
   }
 
   .sidebar-label {
@@ -587,7 +590,7 @@ body {
   .hero-balance {
     background: var(--hero-gradient);
     box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25), 0 8px 10px -6px rgba(37, 99, 235, 0.15);
-    @apply relative overflow-hidden rounded-2xl text-white p-6 md:p-8;
+    @apply relative overflow-hidden rounded-2xl text-white p-5 sm:p-6 md:p-8;
   }
 
   .hero-blob {
@@ -605,7 +608,7 @@ body {
   }
 
   .quick-action-icon {
-    @apply flex h-12 w-12 items-center justify-center rounded-2xl transition-shadow;
+    @apply flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl transition-shadow;
   }
 
   .quick-action-label {

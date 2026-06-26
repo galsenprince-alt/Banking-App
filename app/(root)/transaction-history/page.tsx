@@ -30,7 +30,7 @@ const TransactionHistory = async ({ searchParams }: SearchParamProps) => {
   ) ?? []) as Transaction[];
 
   return (
-    <div className="flex-1 flex flex-col gap-6 overflow-y-auto p-6 sm:p-8 xl:py-10">
+    <div className="flex-1 flex flex-col gap-5 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:py-10">
       <HeaderBox
         title="Transaction History"
         subtext="See your bank details and transactions."

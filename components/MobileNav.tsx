@@ -25,34 +25,48 @@ const MobileNav = ({ user }: MobileNavProps) => {
         <SheetTrigger>
           <Image
             src="/icons/hamburger.svg"
-            width={30}
-            height={30}
+            width={28}
+            height={28}
             alt="menu"
             className="cursor-pointer"
           />
         </SheetTrigger>
-        <SheetContent side="left" className="border-none bg-white">
-          <Link href="/" className="cursor-pointer flex items-center gap-1 px-4">
-            <Image
-              src="/icons/logo.svg"
-              width={40}
-              height={40}
-              alt="M$F Banking logo"
-            />
-            <h1 className="text-22 font-space-grotesk font-bold tracking-tight text-black-1">M$F Banking</h1>
-          </Link>
-          <div className="mobilenav-sheet">
+        <SheetContent
+          side="left"
+          className="border-none p-0"
+          style={{ background: "var(--bg-surface)" }}
+        >
+          <div className="px-5 pt-6 pb-4">
+            <Link href="/" className="cursor-pointer flex items-center gap-2">
+              <Image
+                src="/icons/logo.svg"
+                width={36}
+                height={36}
+                alt="M$F Banking logo"
+              />
+              <h1
+                className="text-[18px] font-space-grotesk font-bold tracking-tight"
+                style={{ color: "var(--text-strong)" }}
+              >
+                M<span style={{ color: "var(--accent)" }}>$</span>F Banking
+              </h1>
+            </Link>
+          </div>
+          <div className="flex h-[calc(100vh-80px)] flex-col justify-between overflow-y-auto px-3">
             <SheetClose asChild>
-              <nav className="flex h-full flex-col gap-6 pt-16 text-white">
-                  {sidebarLinks.map((item) => {
-                const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`)
+              <nav className="flex flex-col gap-1 pt-4">
+                {sidebarLinks.map((item) => {
+                  const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`)
 
-                return (
-                  <SheetClose asChild key={item.route}>
-                    <Link href={item.route} key={item.label}
-                      className={cn('mobilenav-sheet_close w-full', { 'bg-bank-gradient': isActive })}
-                    >
-                        <Image 
+                  return (
+                    <SheetClose asChild key={item.route}>
+                      <Link href={item.route} key={item.label}
+                        className={cn(
+                          'flex items-center gap-3 p-3 rounded-xl w-full transition-colors',
+                          { 'bg-bank-gradient': isActive }
+                        )}
+                      >
+                        <Image
                           src={item.imgURL}
                           alt={item.label}
                           width={20}
@@ -61,18 +75,24 @@ const MobileNav = ({ user }: MobileNavProps) => {
                             'brightness-[3] invert-0': isActive
                           })}
                         />
-                      <p className={cn("text-16 font-semibold text-black-2", { "text-white": isActive })}>
-                        {item.label}
-                      </p>
-                    </Link>
-                  </SheetClose>
-                )
-              })}
-
+                        <p
+                          className={cn("text-14 font-medium", {
+                            "text-white": isActive,
+                          })}
+                          style={isActive ? undefined : { color: "var(--text-soft)" }}
+                        >
+                          {item.label}
+                        </p>
+                      </Link>
+                    </SheetClose>
+                  )
+                })}
               </nav>
             </SheetClose>
 
-            <Footer user={user} type="mobile" />
+            <div className="px-1 pb-4">
+              <Footer user={user} type="mobile" />
+            </div>
           </div>
         </SheetContent>
       </Sheet>

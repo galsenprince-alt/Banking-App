@@ -27,23 +27,25 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   }
 
   return (
-    <section className="flex w-full flex-1 overflow-hidden">
-      <div className="no-scrollbar flex w-full flex-1 flex-col gap-6 px-6 sm:px-8 py-6 lg:py-8 xl:overflow-y-auto">
-        {/* Hero balance card */}
-        <HeroBalance
-          userName={loggedIn?.firstName || "Guest"}
-          totalBalance={totalBalance}
-        />
+    <section className="flex w-full h-full overflow-hidden">
+      <div className="no-scrollbar flex-1 overflow-y-auto">
+        <div className="flex flex-col gap-5 p-4 sm:p-6 lg:p-8 pb-8">
+          {/* Hero balance card */}
+          <HeroBalance
+            userName={loggedIn?.firstName || "Guest"}
+            totalBalance={totalBalance}
+          />
 
-        {/* Quick actions */}
-        <div className="surface p-5">
-          <QuickActions />
-        </div>
+          {/* Quick actions */}
+          <div className="surface p-4 sm:p-5">
+            <QuickActions />
+          </div>
 
-        {/* Two-column grid: spending + activity */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <SpendingBreakdown />
-          <ActivityFeed transactions={transactions} />
+          {/* Two-column grid: spending + activity */}
+          <div className="grid gap-5 md:grid-cols-2">
+            <SpendingBreakdown />
+            <ActivityFeed transactions={transactions} />
+          </div>
         </div>
       </div>
 

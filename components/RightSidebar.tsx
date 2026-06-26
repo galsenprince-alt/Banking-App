@@ -10,23 +10,23 @@ const RightSidebar = ({ user, transactions, banks }: RightSidebarProps) => {
 
   return (
     <aside className="right-sidebar">
-      <section className="flex flex-col pb-6">
+      <section className="flex flex-col pb-4">
         <div
-          className="h-24 w-full"
+          className="h-20 w-full shrink-0"
           style={{ background: "var(--hero-gradient)" }}
         />
-        <div className="profile">
+        <div className="relative flex px-5">
           <div className="profile-img">
-            <span className="text-3xl font-bold" style={{ color: "var(--accent)" }}>
+            <span className="text-2xl font-bold" style={{ color: "var(--accent)" }}>
               {user.firstName?.[0] ?? "?"}
             </span>
           </div>
 
-          <div className="profile-details">
+          <div className="flex flex-col pt-14">
             <h1 className='profile-name' style={{ color: "var(--text-strong)" }}>
               {user.firstName} {user.lastName}
             </h1>
-            <p className="profile-email" style={{ color: "var(--text-muted)" }}>
+            <p className="text-12 font-normal truncate" style={{ color: "var(--text-muted)" }}>
               {user.email}
             </p>
           </div>
