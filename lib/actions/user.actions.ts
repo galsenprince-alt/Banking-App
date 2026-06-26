@@ -99,11 +99,12 @@ export const getLoggedInUser = async (): Promise<User | null> => {
 // ─── logoutAccount ────────────────────────────────────────────────────────────
 export const logoutAccount = async () => {
   try {
-    const { account } = await createSessionClient();
     (await cookies()).delete("my_appwrite_session");
+    const { account } = await createSessionClient();
     await account.deleteSession("current");
     return true;
   } catch (_error) {
+    (await cookies()).delete("my_appwrite_session");
     return null;
   }
 };
