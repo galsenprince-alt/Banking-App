@@ -127,19 +127,29 @@ export const logoutAccount = async () => {
 };
 
 // ─── createLinkToken (Plaid) ──────────────────────────────────────────────────
-export const createLinkToken = async (user: User) => {
+export const createLinkToken = async (user: User): Promise<{ linkToken: string; error?: string }> => {
   try {
+    if (!user?.$id) {
+      console.error("createLinkToken: user.$id is missing");
+      return { linkToken: "", error: "User ID is missing" };
+    }
+    if (!process.env.PLAID_CLIENT_ID || !process.env.PLAID_SECRET) {
+      console.error("createLinkToken: PLAID_CLIENT_ID or PLAID_SECRET env vars missing");
+      return { linkToken: "", error: "Plaid is not configured" };
+    }
     const tokenParams = {
       user: { client_user_id: user.$id },
-      client_name: `${user.firstName} ${user.lastName}`,
+      client_name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || "M$F Banking",
       products: ["auth"] as Products[],
       language: "en",
       country_codes: ["CA", "US"] as CountryCode[],
     };
     const response = await plaidClient.linkTokenCreate(tokenParams);
     return parseStringify({ linkToken: response.data.link_token });
-  } catch (error) {
-    console.error("Error creating link token:", error);
+  } catch (error: any) {
+    const message = error?.response?.data?.error_message ?? error?.message ?? "Unknown Plaid error";
+    console.error("Error creating link token:", message, error?.response?.data);
+    return { linkToken: "", error: message };
   }
 };
 
@@ -162,8 +172,13 @@ export const createBankAccount = async ({
 // ─── exchangePublicToken (Plaid → Stripe) ────────────────────────────────────
 export const exchangePublicToken = async ({
   publicToken, user,
-}: exchangePublicTokenProps) => {
+}: exchangePublicTokenProps): Promise<{ publicTokenExchange?: string; error?: string }> => {
   try {
+    if (!user?.stripeCustomerId) {
+      console.error("exchangePublicToken: user.stripeCustomerId is missing");
+      return { error: "Stripe customer not found. Please sign up again." };
+    }
+
     // 1. Échanger le token public Plaid
     const response = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
     const accessToken = response.data.access_token;
@@ -173,11 +188,12 @@ export const exchangePublicToken = async ({
     const accountsResponse = await plaidClient.accountsGet({ access_token: accessToken });
     const accountData = accountsResponse.data.accounts[0];
 
-    // 3. Créer un processor token Stripe (remplace Dwolla)
+    // 3. Créer un processor token Stripe
     const processorTokenResponse = await plaidClient.processorTokenCreate({
       access_token: accessToken,
       account_id: accountData.account_id,
-processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,    });
+      processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,
+    });
     const processorToken = processorTokenResponse.data.processor_token;
 
     // 4. Lier le compte bancaire à Stripe
@@ -186,7 +202,9 @@ processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,    });
       processorToken,
       bankName: accountData.name,
     });
-    if (!stripeBankAccountId) throw new Error("Error adding Stripe bank account");
+    if (!stripeBankAccountId) {
+      return { error: "Failed to link bank account to Stripe" };
+    }
 
     // 5. Sauvegarder dans Appwrite
     await createBankAccount({
@@ -200,8 +218,10 @@ processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,    });
 
     revalidatePath("/");
     return parseStringify({ publicTokenExchange: "complete" });
-  } catch (error) {
-    console.error("Error exchanging public token:", error);
+  } catch (error: any) {
+    const message = error?.response?.data?.error_message ?? error?.message ?? "Unknown error";
+    console.error("Error exchanging public token:", message, error?.response?.data ?? error);
+    return { error: message };
   }
 };
 

@@ -1,10 +1,9 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
+const plaidEnv = (process.env.PLAID_ENV || "sandbox") as keyof typeof PlaidEnvironments;
+
 const configuration = new Configuration({
-  basePath:
-    PlaidEnvironments[
-      (process.env.PLAID_ENV as keyof typeof PlaidEnvironments) ?? "sandbox"
-    ],
+  basePath: PlaidEnvironments[plaidEnv],
   baseOptions: {
     headers: {
       "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,

@@ -42,18 +42,31 @@ export const addStripeBankAccount = async ({
   bankName: string;
 }): Promise<string | null> => {
   try {
+    if (!stripeCustomerId) {
+      console.error("addStripeBankAccount: stripeCustomerId is missing");
+      return null;
+    }
+    if (!processorToken) {
+      console.error("addStripeBankAccount: processorToken is missing");
+      return null;
+    }
+
     const stripe = getStripeClient();
 
-    // Utilise le processor token Plaid pour créer une source bancaire Stripe
+    // Plaid processor token for Stripe (btok_xxx) used as a bank account token
     const bankAccount = await stripe.customers.createSource(
       stripeCustomerId,
       { source: processorToken }
     );
 
-    console.log(`✓ Compte bancaire ajouté: ${bankName} (${bankAccount.id})`);
+    console.log(`Bank account linked: ${bankName} (${bankAccount.id})`);
     return bankAccount.id;
-  } catch (error) {
-    console.error("Error adding Stripe bank account:", error);
+  } catch (error: any) {
+    const msg = error?.message ?? "Unknown Stripe error";
+    const code = error?.code ?? "";
+    console.error(`Error adding Stripe bank account [${code}]: ${msg}`);
+    console.error("stripeCustomerId:", stripeCustomerId);
+    console.error("processorToken prefix:", processorToken?.substring(0, 10) + "...");
     return null;
   }
 };
