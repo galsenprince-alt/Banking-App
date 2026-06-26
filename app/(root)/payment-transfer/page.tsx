@@ -12,9 +12,7 @@ const Transfer = async () => {
     userId: loggedIn.$id
   })
 
-  if(!accounts) return;
-  
-  const accountsData = accounts?.data;
+  const accountsData = accounts?.data ?? [];
 
   return (
     <section className="payment-transfer">

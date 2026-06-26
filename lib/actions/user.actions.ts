@@ -41,7 +41,7 @@ export const signIn = async ({ email, password }: signInProps) => {
       secure: true,
     });
     const user = await getUserInfo({ userId: session.userId });
-    return user ?? null;
+    return user ?? { $id: session.userId, email } as unknown as User;
   } catch (error) {
     console.error("Error during sign in:", error);
   }
@@ -100,7 +100,14 @@ export const getLoggedInUser = async (): Promise<User | null> => {
     const { account } = await createSessionClient();
     const result = await account.get();
     const user = await getUserInfo({ userId: result.$id });
-    return user ?? null;
+    if (user) return user;
+    return {
+      $id: result.$id,
+      userId: result.$id,
+      email: result.email,
+      firstName: result.name?.split(" ")[0] ?? "",
+      lastName: result.name?.split(" ").slice(1).join(" ") ?? "",
+    } as unknown as User;
   } catch (_error) {
     return null;
   }

@@ -14,14 +14,17 @@ const Home = async ({ searchParams }: SearchParamProps) => {
 
   const accounts = await getAccounts({ userId: loggedIn.$id });
 
-  if (!accounts) return null;
-
-  const accountsData = accounts?.data;
-  const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
-  const account = await getAccount({ appwriteItemId });
-
+  const accountsData = accounts?.data ?? [];
   const totalBalance = accounts?.totalCurrentBalance || 0;
-  const transactions = (account?.transactions || []) as Transaction[];
+
+  let transactions: Transaction[] = [];
+  if (accountsData.length > 0) {
+    const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
+    if (appwriteItemId) {
+      const account = await getAccount({ appwriteItemId });
+      transactions = (account?.transactions || []) as Transaction[];
+    }
+  }
 
   return (
     <section className="flex w-full">
