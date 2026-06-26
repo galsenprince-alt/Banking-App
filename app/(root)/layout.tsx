@@ -3,7 +3,8 @@ export const dynamic = "force-dynamic";
 import MobileNav from "@/components/MobileNav";
 import Sidebar from "@/components/Sidebar";
 import TopHeader from "@/components/TopHeader";
-import { getLoggedInUser, logoutAccount } from "@/lib/actions/user.actions";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function RootLayout({
@@ -13,10 +14,7 @@ export default async function RootLayout({
 }>) {
   const loggedIn = await getLoggedInUser();
 
-  if (!loggedIn) {
-    await logoutAccount();
-    redirect("/sign-in");
-  }
+  if (!loggedIn) redirect("/sign-in");
 
   return (
     <main className="flex h-screen w-full font-dm-sans">
