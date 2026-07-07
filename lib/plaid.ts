@@ -1,16 +1,18 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
-const rawEnv = (process.env.PLAID_ENV || "sandbox").toLowerCase();
+const rawEnv = (process.env.PLAID_ENV || "sandbox").trim().toLowerCase();
 
-if (!(rawEnv in PlaidEnvironments)) {
+let plaidEnv: keyof typeof PlaidEnvironments;
+if (rawEnv in PlaidEnvironments) {
+  plaidEnv = rawEnv as keyof typeof PlaidEnvironments;
+} else {
   const supported = Object.keys(PlaidEnvironments).join(", ");
-  throw new Error(
-    `Invalid PLAID_ENV="${rawEnv}". Supported values: ${supported}. ` +
-      `(Note: "development" was deprecated by Plaid — use "production" instead.)`
+  console.warn(
+    `[plaid] Invalid PLAID_ENV="${rawEnv}". Supported: ${supported}. ` +
+      `Falling back to "sandbox". (Note: "development" was deprecated — use "production".)`
   );
+  plaidEnv = "sandbox";
 }
-
-const plaidEnv = rawEnv as keyof typeof PlaidEnvironments;
 
 if (!process.env.PLAID_CLIENT_ID || !process.env.PLAID_SECRET) {
   console.warn(
