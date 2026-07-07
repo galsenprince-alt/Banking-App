@@ -36,14 +36,14 @@ const actions = [
 
 const QuickActions = () => {
   return (
-    <div className="grid grid-cols-4 gap-3 md:gap-5">
+    <div className="flex justify-center gap-8 py-6 px-6">
       {actions.map(({ label, href, Icon, bg, fg }) => (
         <Link key={label} href={href} className="quick-action group">
           <div
             className="quick-action-icon group-hover:shadow-md"
             style={{ background: bg, color: fg }}
           >
-            <Icon size={20} strokeWidth={2} />
+            <Icon size={20} strokeWidth={1.5} />
           </div>
           <span className="quick-action-label">{label}</span>
         </Link>

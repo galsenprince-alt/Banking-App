@@ -25,7 +25,7 @@ const SpendingBreakdown = ({
   );
 
   return (
-    <div className="surface p-6">
+    <div className="surface p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="card-title">Spending</h3>
         <span className="card-subtitle">This month</span>

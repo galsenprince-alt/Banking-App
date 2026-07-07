@@ -39,7 +39,7 @@ const TopHeader = ({ user }: { user: User }) => {
         <button
           type="button"
           aria-label="Search"
-          className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"
+          className="flex h-8 w-8 items-center justify-center rounded-xl transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"
           style={{ color: "var(--text-muted)" }}
         >
           <Search size={16} />
@@ -47,7 +47,7 @@ const TopHeader = ({ user }: { user: User }) => {
         <button
           type="button"
           aria-label="Notifications"
-          className="relative flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"
+          className="relative flex h-8 w-8 items-center justify-center rounded-xl transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"
           style={{ color: "var(--text-muted)" }}
         >
           <Bell size={16} />

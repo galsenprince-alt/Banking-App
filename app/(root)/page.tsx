@@ -28,18 +28,23 @@ const Home = async ({ searchParams }: SearchParamProps) => {
 
   return (
     <section className="flex w-full h-full overflow-hidden">
-      <div className="no-scrollbar flex-1 overflow-y-auto p-6">
-        <div className="flex flex-col gap-6 max-w-[1200px] mx-auto">
-          <HeroBalance
-            userName={loggedIn?.firstName || "Guest"}
-            totalBalance={totalBalance}
-          />
+      <div
+        className="no-scrollbar flex-1 overflow-y-auto min-h-full"
+        style={{ background: "var(--bg-page)" }}
+      >
+        {/* Header gradient — pleine largeur de la zone de contenu, coins arrondis en bas */}
+        <HeroBalance
+          userName={loggedIn?.firstName || "Guest"}
+          totalBalance={totalBalance}
+        />
 
-          <div className="surface p-6">
+        {/* Contenu principal — padding uniforme, largeur max centrée */}
+        <div className="max-w-6xl mx-auto px-6 md:px-8 py-6 flex flex-col gap-6">
+          <div className="surface">
             <QuickActions />
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 items-stretch">
             <SpendingBreakdown />
             <ActivityFeed transactions={transactions} />
           </div>

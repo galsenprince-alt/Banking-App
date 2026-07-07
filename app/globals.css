@@ -3,7 +3,7 @@
 @theme {
   /* Custom Colors */
   --color-fill-1: rgba(255, 255, 255, 0.10);
-  --color-bankGradient: #0179FE;
+  --color-bankGradient: #15803D;
 
   --color-indigo-500: #6172F3;
   --color-indigo-700: #3538CD;
@@ -43,9 +43,9 @@
   --color-gray-900: #101828;
 
   /* Background Images */
-  --background-image-bank-gradient: linear-gradient(90deg, #0179FE 0%, #4893FF 100%);
+  --background-image-bank-gradient: linear-gradient(135deg, #15803D 0%, #16A34A 50%, #22C55E 100%);
   --background-image-gradient-mesh: url('/icons/gradient-mesh.svg');
-  --background-image-bank-green-gradient: linear-gradient(90deg, #01797A 0%, #489399 100%);
+  --background-image-bank-green-gradient: linear-gradient(90deg, #15803D 0%, #22C55E 100%);
 
   /* Shadows */
   --shadow-form: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
@@ -84,57 +84,51 @@
    Semantic theme tokens — auto-swap between light & dark
    ───────────────────────────────────────────────────────────────────────────── */
 :root {
-  --bg-page: #F8FAFC;
+  --bg-page: #F8FAFC;          /* slate-50 */
   --bg-surface: #FFFFFF;
-  --bg-surface-2: #F1F5F9;
-  --text-strong: #0F172A;
-  --text-soft: #334155;
-  --text-muted: #64748B;
-  --border-subtle: #E2E8F0;
-  --accent: #2563EB;
-  --accent-soft: #EFF6FF;
+  --bg-surface-2: #F1F5F9;      /* slate-100 */
+  --text-strong: #0F172A;       /* slate-900 */
+  --text-soft: #475569;         /* slate-600 */
+  --text-muted: #94A3B8;        /* slate-400 */
+  --border-subtle: #F1F5F9;     /* slate-100 — borders subtils du design system */
+  --accent: #15803D;            /* green-700 — signature MSF */
+  --accent-soft: #F0FDF4;       /* green-50 */
   --violet: #7C3AED;
   --violet-soft: #F5F3FF;
-  --emerald: #059669;
-  --emerald-soft: #ECFDF5;
-  --rose: #DC2626;
+  --emerald: #16A34A;           /* green-600 */
+  --emerald-soft: #F0FDF4;
+  --rose: #EF4444;              /* red-500 */
   --rose-soft: #FEF2F2;
-  --hero-gradient: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+  --hero-gradient: linear-gradient(135deg, #15803D 0%, #16A34A 50%, #22C55E 100%);
   --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
   --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
   --sidebar-bg: #FFFFFF;
-  --sidebar-active: #EFF6FF;
-  --sidebar-active-text: #1D4ED8;
+  --sidebar-active: #F0FDF4;
+  --sidebar-active-text: #15803D;
 }
 
 .dark {
-  --bg-page: #0B1120;
-  --bg-surface: #131C2E;
-  --bg-surface-2: #1A2540;
+  --bg-page: #0F172A;           /* slate-900 — pas de noir pur */
+  --bg-surface: #1E293B;        /* slate-800 */
+  --bg-surface-2: #334155;      /* slate-700 */
   --text-strong: #F1F5F9;
   --text-soft: #CBD5E1;
   --text-muted: #94A3B8;
-  --border-subtle: #1E293B;
-  --accent: #60A5FA;
-  --accent-soft: rgba(96, 165, 250, 0.12);
+  --border-subtle: #334155;
+  --accent: #22C55E;            /* green-500 pour le dark mode */
+  --accent-soft: rgba(34, 197, 94, 0.12);
   --violet: #A78BFA;
   --violet-soft: rgba(167, 139, 250, 0.12);
-  --emerald: #34D399;
-  --emerald-soft: rgba(52, 211, 153, 0.12);
-  --rose: #FB7185;
-  --rose-soft: rgba(251, 113, 133, 0.12);
-  --hero-gradient: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #7C3AED 100%);
+  --emerald: #4ADE80;
+  --emerald-soft: rgba(74, 222, 128, 0.12);
+  --rose: #F87171;
+  --rose-soft: rgba(248, 113, 113, 0.12);
+  --hero-gradient: linear-gradient(135deg, #14532D 0%, #15803D 50%, #16A34A 100%);
   --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.15);
   --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
-  --sidebar-bg: #131C2E;
-  --sidebar-active: rgba(96, 165, 250, 0.12);
-  --sidebar-active-text: #60A5FA;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  --sidebar-bg: #1E293B;
+  --sidebar-active: rgba(34, 197, 94, 0.12);
+  --sidebar-active-text: #22C55E;
 }
 
 html, body {
@@ -252,7 +246,7 @@ body {
 
 @layer utilities {
   .input-class {
-    @apply text-16 placeholder:text-16 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500;
+    @apply text-16 placeholder:text-16 rounded-xl border border-gray-300 text-gray-900 placeholder:text-gray-500;
   }
 
   .sheet-content button {
@@ -301,7 +295,7 @@ body {
   }
 
   .view-all-btn {
-    @apply text-14 rounded-lg border border-gray-300 px-4 py-2.5 font-semibold text-gray-700;
+    @apply text-14 rounded-xl border border-gray-300 px-4 py-2.5 font-semibold text-gray-700;
   }
 
   .recent-transactions-label {
@@ -365,11 +359,11 @@ body {
   }
 
   .transactions-account {
-    @apply flex flex-col justify-between gap-4 rounded-lg border-y bg-blue-600 px-4 py-5 md:flex-row;
+    @apply flex flex-col justify-between gap-4 rounded-xl border-y bg-blue-600 px-4 py-5 md:flex-row;
   }
 
   .transactions-account-balance {
-    @apply flex-center flex-col gap-2 rounded-md bg-blue-25/20 px-4 py-2 text-white;
+    @apply flex-center flex-col gap-2 rounded-xl bg-blue-25/20 px-4 py-2 text-white;
   }
 
   .header-box {
@@ -417,20 +411,20 @@ body {
   }
 
   .mobilenav-sheet_close {
-    @apply flex gap-3 items-center p-4 rounded-lg w-full max-w-60;
+    @apply flex gap-3 items-center p-4 rounded-xl w-full max-w-60;
   }
 
   /* PlaidLink */
   .plaidlink-primary {
-    @apply text-16 rounded-lg border border-bankGradient bg-bank-gradient font-semibold text-white shadow-form;
+    @apply text-16 rounded-xl border border-bankGradient bg-bank-gradient font-semibold text-white shadow-form;
   }
 
   .plaidlink-ghost {
-    @apply flex cursor-pointer items-center justify-center gap-3 rounded-lg px-3 py-7 hover:bg-white lg:justify-start;
+    @apply flex cursor-pointer items-center justify-center gap-3 rounded-xl px-3 py-7 hover:bg-white lg:justify-start;
   }
 
   .plaidlink-default {
-    @apply flex justify-start! cursor-pointer gap-3 rounded-lg bg-transparent! flex-row;
+    @apply flex justify-start! cursor-pointer gap-3 rounded-xl bg-transparent! flex-row;
   }
 
   /* Auth */
@@ -456,7 +450,7 @@ body {
   }
 
   .form-btn {
-    @apply text-16 rounded-lg border border-bankGradient bg-bank-gradient font-semibold text-white shadow-form;
+    @apply text-16 rounded-xl border border-bankGradient bg-bank-gradient font-semibold text-white shadow-form;
   }
 
   .form-link {
@@ -506,7 +500,7 @@ body {
 
   .footer_name {
     background: var(--accent-soft);
-    @apply flex size-9 items-center justify-center rounded-lg max-xl:hidden;
+    @apply flex size-9 items-center justify-center rounded-xl max-xl:hidden;
   }
 
   .footer_email {
@@ -589,8 +583,7 @@ body {
 
   .hero-balance {
     background: var(--hero-gradient);
-    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25), 0 8px 10px -6px rgba(37, 99, 235, 0.15);
-    @apply relative overflow-hidden rounded-2xl text-white p-6;
+    @apply relative overflow-hidden rounded-b-3xl text-white py-6 px-8;
   }
 
   .hero-blob {
@@ -608,7 +601,7 @@ body {
   }
 
   .quick-action-icon {
-    @apply flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl transition-shadow;
+    @apply flex h-14 w-14 items-center justify-center rounded-full transition-shadow;
   }
 
   .quick-action-label {

@@ -47,7 +47,7 @@ const ActivityFeed = ({ transactions = [] }: { transactions?: ActivityTransactio
   const items = transactions.slice(0, 5);
 
   return (
-    <div className="surface p-6">
+    <div className="surface p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h3 className="card-title">Recent activity</h3>
         <Link
@@ -60,7 +60,9 @@ const ActivityFeed = ({ transactions = [] }: { transactions?: ActivityTransactio
       </div>
 
       {items.length === 0 ? (
-        <p className="card-subtitle py-6 text-center">No transactions yet</p>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="card-subtitle">No transactions yet</p>
+        </div>
       ) : (
         <div className="flex flex-col gap-2">
           {items.map((tx) => {
