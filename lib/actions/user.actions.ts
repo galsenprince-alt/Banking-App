@@ -160,16 +160,29 @@ export const getLoggedInUser = async (): Promise<User | null> => {
     const existing = await getUserInfo({ userId: result.$id });
     if (existing?.stripeCustomerId) return existing;
 
-    // Self-heal: auth account exists but document/Stripe are missing.
-    // Happens for accounts created before the schema was fixed (partial sign-ups).
     const [firstName, ...rest] = (result.name || "").split(" ");
-    const repaired = await ensureUserDocument({
-      authId: result.$id,
-      email: result.email,
-      firstName: firstName || result.email.split("@")[0],
-      lastName: rest.join(" ") || "",
-    });
-    return repaired;
+    const fn = firstName || result.email.split("@")[0];
+    const ln = rest.join(" ") || "";
+
+    if (existing) return existing;
+
+    try {
+      return await ensureUserDocument({
+        authId: result.$id,
+        email: result.email,
+        firstName: fn,
+        lastName: ln,
+      });
+    } catch (healError) {
+      console.error("[getLoggedInUser] self-heal failed, returning basic user:", healError);
+      return {
+        $id: result.$id,
+        userId: result.$id,
+        email: result.email,
+        firstName: fn,
+        lastName: ln,
+      } as unknown as User;
+    }
   } catch (error) {
     console.error("[getLoggedInUser] error:", error);
     return null;
