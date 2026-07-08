@@ -248,11 +248,6 @@ export const exchangePublicToken = async ({
   publicToken, user,
 }: exchangePublicTokenProps): Promise<{ publicTokenExchange?: string; error?: string }> => {
   try {
-    if (!user?.stripeCustomerId) {
-      console.error("exchangePublicToken: user.stripeCustomerId is missing");
-      return { error: "Stripe customer not found. Please sign up again." };
-    }
-
     // 1. Échanger le token public Plaid
     const response = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
     const accessToken = response.data.access_token;
@@ -262,31 +257,35 @@ export const exchangePublicToken = async ({
     const accountsResponse = await plaidClient.accountsGet({ access_token: accessToken });
     const accountData = accountsResponse.data.accounts[0];
 
-    // 3. Créer un processor token Stripe
-    const processorTokenResponse = await plaidClient.processorTokenCreate({
-      access_token: accessToken,
-      account_id: accountData.account_id,
-      processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,
-    });
-    const processorToken = processorTokenResponse.data.processor_token;
-
-    // 4. Lier le compte bancaire à Stripe
-    const stripeBankAccountId = await addStripeBankAccount({
-      stripeCustomerId: user.stripeCustomerId,
-      processorToken,
-      bankName: accountData.name,
-    });
-    if (!stripeBankAccountId) {
-      return { error: "Failed to link bank account to Stripe" };
+    // 3. Tenter le lien Stripe (optionnel — certaines institutions ne le supportent pas)
+    let stripeBankAccountId: string | null = null;
+    if (user?.stripeCustomerId) {
+      try {
+        const processorTokenResponse = await plaidClient.processorTokenCreate({
+          access_token: accessToken,
+          account_id: accountData.account_id,
+          processor: "stripe" as ProcessorTokenCreateRequestProcessorEnum,
+        });
+        stripeBankAccountId = await addStripeBankAccount({
+          stripeCustomerId: user.stripeCustomerId,
+          processorToken: processorTokenResponse.data.processor_token,
+          bankName: accountData.name,
+        });
+      } catch (stripeError: any) {
+        console.warn(
+          "[exchangePublicToken] Stripe link skipped for this institution:",
+          stripeError?.response?.data?.error_message ?? stripeError?.message
+        );
+      }
     }
 
-    // 5. Sauvegarder dans Appwrite
+    // 4. Sauvegarder dans Appwrite (avec ou sans lien Stripe)
     await createBankAccount({
       userId: user.$id,
       bankId: itemId,
       accountId: accountData.account_id,
       accessToken,
-      fundingSourceUrl: stripeBankAccountId,
+      fundingSourceUrl: stripeBankAccountId ?? "",
       sharableId: encryptId(accountData.account_id),
     });
 
