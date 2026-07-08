@@ -164,8 +164,6 @@ export const getLoggedInUser = async (): Promise<User | null> => {
     const fn = firstName || result.email.split("@")[0];
     const ln = rest.join(" ") || "";
 
-    if (existing) return existing;
-
     try {
       return await ensureUserDocument({
         authId: result.$id,
@@ -174,14 +172,14 @@ export const getLoggedInUser = async (): Promise<User | null> => {
         lastName: ln,
       });
     } catch (healError) {
-      console.error("[getLoggedInUser] self-heal failed, returning basic user:", healError);
-      return {
+      console.error("[getLoggedInUser] self-heal failed:", healError);
+      return (existing ?? {
         $id: result.$id,
         userId: result.$id,
         email: result.email,
         firstName: fn,
         lastName: ln,
-      } as unknown as User;
+      }) as unknown as User;
     }
   } catch (error) {
     console.error("[getLoggedInUser] error:", error);
