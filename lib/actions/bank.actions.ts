@@ -128,25 +128,27 @@ export const getTransactions = async ({
   accessToken,
 }: getTransactionsProps) => {
   let hasMore = true;
+  let cursor: string | undefined = undefined;
   let transactions: Transaction[] = [];
 
   try {
     while (hasMore) {
       const response = await plaidClient.transactionsSync({
         access_token: accessToken,
+        cursor,
       });
 
       const data = response.data;
 
       const mapped = data.added.map((t) => ({
         id: t.transaction_id,
-        name: t.name,
+        name: t.merchant_name || t.name,
         paymentChannel: t.payment_channel,
         type: t.payment_channel,
         accountId: t.account_id,
         amount: t.amount,
         pending: t.pending,
-        category: t.category ? t.category[0] : "",
+        category: t.personal_finance_category?.primary || (t.category ? t.category[0] : ""),
         date: t.date,
         image: t.logo_url ?? "",
         $id: t.transaction_id,
@@ -158,6 +160,7 @@ export const getTransactions = async ({
 
       transactions = [...transactions, ...mapped];
       hasMore = data.has_more;
+      cursor = data.next_cursor;
     }
 
     return parseStringify(transactions);

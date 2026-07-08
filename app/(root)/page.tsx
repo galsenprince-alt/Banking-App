@@ -45,7 +45,7 @@ const Home = async ({ searchParams }: SearchParamProps) => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 items-stretch">
-            <SpendingBreakdown />
+            <SpendingBreakdown transactions={transactions} />
             <ActivityFeed transactions={transactions} />
           </div>
         </div>
