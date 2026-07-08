@@ -85,10 +85,10 @@ async function ensureUserDocument(params: {
         email,
         firstName,
         lastName,
-        ...(extra?.address1 && { adress1: extra.address1 }),
-        ...(extra?.city && { city: extra.city }),
-        ...(extra?.postalCode && { postalCode: extra.postalCode }),
-        ...(extra?.dateOfBirth && { dateOfBirth: extra.dateOfBirth }),
+        adress1: extra?.address1 || "",
+        city: extra?.city || "",
+        postalCode: extra?.postalCode || "",
+        dateOfBirth: extra?.dateOfBirth || "",
         stripeCustomerId,
       }
     );
