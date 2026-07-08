@@ -56,8 +56,12 @@ const AuthForm = ({ type }: { type: string }) => {
           email: data.email,
           password: data.password,
         };
-        const newUser = await signUp(userData);
-        setUser(newUser ?? null);
+        const result = await signUp(userData);
+        if (result && "error" in result) {
+          setErrorMessage(result.error);
+        } else {
+          setUser((result as User) ?? null);
+        }
       }
       if (type === "sign-in") {
         const response = await signIn({

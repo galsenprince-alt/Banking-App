@@ -47,39 +47,95 @@ export const signIn = async ({ email, password }: signInProps) => {
   }
 };
 
+// ─── ensureUserDocument ───────────────────────────────────────────────────────
+// Idempotent repair: given an Appwrite auth account, guarantee that a matching
+// document exists in the users collection with a valid stripeCustomerId.
+// Called from signUp (main path) AND getLoggedInUser (self-heal on read).
+async function ensureUserDocument(params: {
+  authId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  extra?: {
+    address1?: string;
+    city?: string;
+    postalCode?: string;
+    dateOfBirth?: string;
+  };
+}): Promise<User> {
+  const { authId, email, firstName, lastName, extra } = params;
+  const { database } = await createAdminClient();
+
+  // 1. Does the document already exist?
+  const existing = await database.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
+    Query.equal("userId", [authId]),
+  ]);
+  let doc = existing.documents[0];
+
+  // 2. Missing → create Stripe customer + document
+  if (!doc) {
+    const stripeCustomerId = await createStripeCustomer({ email, firstName, lastName });
+    if (!stripeCustomerId) {
+      throw new Error("Failed to create Stripe customer during user document repair");
+    }
+    doc = await database.createDocument(
+      DATABASE_ID!, USER_COLLECTION_ID!, ID.unique(),
+      {
+        userId: authId,
+        email,
+        firstName,
+        lastName,
+        ...(extra?.address1 && { adress1: extra.address1 }),
+        ...(extra?.city && { city: extra.city }),
+        ...(extra?.postalCode && { postalCode: extra.postalCode }),
+        ...(extra?.dateOfBirth && { dateOfBirth: extra.dateOfBirth }),
+        stripeCustomerId,
+      }
+    );
+    console.log(`[ensureUserDocument] Created document for ${email} with Stripe ${stripeCustomerId}`);
+  }
+
+  // 3. Document exists but stripeCustomerId is missing → back-fill it
+  if (!(doc as any).stripeCustomerId) {
+    const stripeCustomerId = await createStripeCustomer({ email, firstName, lastName });
+    if (!stripeCustomerId) {
+      throw new Error("Failed to create Stripe customer during back-fill");
+    }
+    doc = await database.updateDocument(
+      DATABASE_ID!, USER_COLLECTION_ID!, doc.$id,
+      { stripeCustomerId }
+    );
+    console.log(`[ensureUserDocument] Back-filled stripeCustomerId=${stripeCustomerId} for ${email}`);
+  }
+
+  return parseStringify(doc) as unknown as User;
+}
+
 // ─── signUp ───────────────────────────────────────────────────────────────────
-export const signUp = async ({ password, ...userData }: SignUpParams): Promise<User | undefined> => {
+export const signUp = async ({ password, ...userData }: SignUpParams): Promise<User | { error: string } | undefined> => {
   const { email, firstName, lastName } = userData;
   try {
-    const { account, database } = await createAdminClient();
+    const { account } = await createAdminClient();
 
     // 1. Créer le compte Appwrite Auth
     const newUserAccount = await account.create(
       ID.unique(), email, password, `${firstName} ${lastName}`
     );
-    if (!newUserAccount) throw new Error("Error creating user");
+    if (!newUserAccount) throw new Error("Error creating Appwrite auth account");
 
-    // 2. Créer le client Stripe (remplace Dwolla)
-    const stripeCustomerId = await createStripeCustomer({ email, firstName, lastName });
-    if (!stripeCustomerId) throw new Error("Error creating Stripe customer");
-
-    // 3. Sauvegarder dans Appwrite
-    const newUser = await database.createDocument(
-      DATABASE_ID!, USER_COLLECTION_ID!, ID.unique(),
-      {
-        userId: newUserAccount.$id,
-        email,
-        firstName,
-        lastName,
-        adress1: userData.address1,
+    // 2. Créer Stripe customer + document Appwrite (idempotent)
+    const user = await ensureUserDocument({
+      authId: newUserAccount.$id,
+      email, firstName, lastName,
+      extra: {
+        address1: userData.address1,
         city: userData.city,
         postalCode: userData.postalCode,
         dateOfBirth: userData.dateOfBirth,
-        stripeCustomerId,
-      }
-    );
+      },
+    });
 
-    // 4. Créer la session
+    // 3. Créer la session
     const session = await account.createEmailPasswordSession(email, password);
     (await cookies()).set("my_appwrite_session", session.secret, {
       path: "/",
@@ -88,9 +144,11 @@ export const signUp = async ({ password, ...userData }: SignUpParams): Promise<U
       secure: true,
     });
 
-    return parseStringify(newUser) as unknown as User;
-  } catch (error) {
-    console.error("Error during sign up:", error);
+    return user;
+  } catch (error: any) {
+    const message = error?.response?.message ?? error?.message ?? "Unknown sign-up error";
+    console.error("Error during sign up:", message, error);
+    return { error: message };
   }
 };
 
@@ -99,16 +157,21 @@ export const getLoggedInUser = async (): Promise<User | null> => {
   try {
     const { account } = await createSessionClient();
     const result = await account.get();
-    const user = await getUserInfo({ userId: result.$id });
-    if (user) return user;
-    return {
-      $id: result.$id,
-      userId: result.$id,
+    const existing = await getUserInfo({ userId: result.$id });
+    if (existing?.stripeCustomerId) return existing;
+
+    // Self-heal: auth account exists but document/Stripe are missing.
+    // Happens for accounts created before the schema was fixed (partial sign-ups).
+    const [firstName, ...rest] = (result.name || "").split(" ");
+    const repaired = await ensureUserDocument({
+      authId: result.$id,
       email: result.email,
-      firstName: result.name?.split(" ")[0] ?? "",
-      lastName: result.name?.split(" ").slice(1).join(" ") ?? "",
-    } as unknown as User;
-  } catch (_error) {
+      firstName: firstName || result.email.split("@")[0],
+      lastName: rest.join(" ") || "",
+    });
+    return repaired;
+  } catch (error) {
+    console.error("[getLoggedInUser] error:", error);
     return null;
   }
 };
